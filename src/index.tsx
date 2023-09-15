@@ -2,6 +2,7 @@ import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html"
 import { swagger } from '@elysiajs/swagger'
 import { Counter } from "./components/Counter";
+import { renderToReadableStream } from 'react-dom/server';
 
 const TODOS = [
   { id: 1, title: 'Buy milk' },
@@ -10,6 +11,9 @@ const TODOS = [
 ]
 
 const app = new Elysia()
+  .on('start', app => {
+    console.log('Elysia started at http://%s:%s', app.server?.hostname, app.server?.port);
+  })
   .use(html())
   .use(swagger())
   .get("/", () => "Hello Elysia", {
@@ -29,12 +33,17 @@ const app = new Elysia()
     return TODOS.find(todo => todo.id === +id)
   }, {
     params: t.Object({
-      id: t.Number()
+      id: t.Numeric() // Cast the type to Number, you can also use tranform object
     }),
   })
-  .get('/app', () => <Counter />)
-  .listen(Bun.env.PORT || 3000);
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+  // This will work only if you use server-side apis only if none you should return html with react and do hydration or something =)
+  .get('/app', () => <Counter />)
+  .get('/react', async () => new Response(await renderToReadableStream(<Counter />,{
+    onError: console.error
+  }), { 
+    headers: {
+      'Content-Type': 'text/html'
+    }
+  }))
+  .listen(Bun.env.PORT || 3000);
