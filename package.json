@@ -1,15 +1,21 @@
 {
-  "name": "hi-bun-api",
-  "version": "1.0.50",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
-  },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/html": "^0.6.5",
+    "@elysiajs/swagger": "^0.6.2",
+    "@types/react": "^18.2.21",
+    "elysia": "latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/react-dom": "^18.2.7",
     "bun-types": "latest"
   },
-  "module": "src/index.js"
+  "module": "src/index.js",
+  "name": "hi-bun-api",
+  "scripts": {
+    "dev": "bun run --watch src/index.tsx",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.50"
 }
