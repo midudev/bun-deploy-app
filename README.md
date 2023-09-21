@@ -13,3 +13,10 @@ bun run dev
 ```
 
 Open http://localhost:3000/ with your browser to see the result.
+
+## React Server Side Rendering
+
+Based in this work:
+
+- https://github.com/bun-community/create-templates/tree/main/react-ssr
+

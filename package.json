@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@elysiajs/html": "^0.6.5",
+    "@elysiajs/static": "0.6.0",
     "@elysiajs/swagger": "^0.6.2",
     "@types/react": "^18.2.21",
     "elysia": "latest",
@@ -15,6 +16,7 @@
   "name": "hi-bun-api",
   "scripts": {
     "dev": "bun run --watch src/index.tsx",
+    "build:hydrator": "bun build --minify --target=browser --outdir=public src/public/main.tsx",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "version": "1.0.50"

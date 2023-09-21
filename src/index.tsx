@@ -1,8 +1,21 @@
 import { Elysia, t } from "elysia";
+import { staticPlugin } from '@elysiajs/static'
 import { html } from "@elysiajs/html"
 import { swagger } from '@elysiajs/swagger'
 import { Counter } from "./components/Counter";
 import { renderToReadableStream } from 'react-dom/server';
+import { basename } from "path";
+import  App  from "./pages";
+
+const {outputs: [hydratratejsAsset, pageAsset]} = await Bun.build({
+  entrypoints: ['src/hydrate.tsx', 'src/pages/index.tsx'],
+  outdir: 'public',
+  target: 'browser',
+  splitting: true,
+  minify: true,
+  publicPath: '/',
+}); // You can read automatically from outputs
+
 
 const TODOS = [
   { id: 1, title: 'Buy milk' },
@@ -14,8 +27,12 @@ const app = new Elysia()
   .on('start', app => {
     console.log('Elysia started at http://%s:%s', app.server?.hostname, app.server?.port);
   })
-  .use(html())
+  // .use(html())
   .use(swagger())
+  .use(staticPlugin({
+    assets: 'public',
+    prefix: ''
+  }))
   .get("/", () => "Hello Elysia", {
     response: t.String()
   })
@@ -39,11 +56,18 @@ const app = new Elysia()
 
   // This will work only if you use server-side apis only if none you should return html with react and do hydration or something =)
   .get('/app', () => <Counter />)
-  .get('/react', async () => new Response(await renderToReadableStream(<Counter />,{
-    onError: console.error
-  }), { 
-    headers: {
-      'Content-Type': 'text/html'
-    }
-  }))
-  .listen(Bun.env.PORT || 3000);
+  .get(basename(hydratratejsAsset.path), () => Bun.file(hydratratejsAsset.path))
+  .get('/page', async () => {
+    const reactStream = await renderToReadableStream(<App />, {
+      bootstrapScriptContent: `globalThis.__CLIENT_COMPONENT_SRC__ = "/pages/${basename(pageAsset.path)}"`,
+      bootstrapModules: [basename(hydratratejsAsset.path)],
+      onError: console.error
+    });
+    return new Response(reactStream, { 
+        headers: {
+          'Content-Type': 'text/html'
+        }
+    })
+  })
+  .listen(Bun.env.PORT || 0);
+
