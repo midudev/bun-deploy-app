@@ -1,11 +1,11 @@
 import { Elysia, t } from "elysia";
-import { staticPlugin } from '@elysiajs/static'
-import { html } from "@elysiajs/html"
-import { swagger } from '@elysiajs/swagger'
+import { staticPlugin } from '@elysiajs/static';
+import { swagger } from '@elysiajs/swagger';
 import { Counter } from "./components/Counter";
 import { renderToReadableStream } from 'react-dom/server';
 import { basename } from "path";
 import  App  from "./pages";
+import html from "@elysiajs/html";
 
 const {outputs: [hydratratejsAsset, pageAsset]} = await Bun.build({
   entrypoints: ['src/hydrate.tsx', 'src/pages/index.tsx'],
@@ -27,7 +27,7 @@ const app = new Elysia()
   .on('start', app => {
     console.log('Elysia started at http://%s:%s', app.server?.hostname, app.server?.port);
   })
-  // .use(html())
+  .use(html())
   .use(swagger())
   .use(staticPlugin({
     assets: 'public',
@@ -63,10 +63,10 @@ const app = new Elysia()
       bootstrapModules: [basename(hydratratejsAsset.path)],
       onError: console.error
     });
-    return new Response(reactStream, { 
-        headers: {
-          'Content-Type': 'text/html'
-        }
+    return new Response(reactStream, {
+      headers: { // Not necessary but be explicit in some cases it's fine
+        'Content-Type': 'text/html'
+      }
     })
   })
   .listen(Bun.env.PORT || 0);
