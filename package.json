@@ -1,15 +1,15 @@
 {
   "dependencies": {
-    "@elysiajs/html": "^0.6.5",
+    "@elysiajs/html": "0.6.5",
     "@elysiajs/static": "0.6.0",
-    "@elysiajs/swagger": "^0.6.2",
-    "@types/react": "^18.2.21",
+    "@elysiajs/swagger": "0.6.2",
+    "@types/react": "18.2.21",
     "elysia": "latest",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/react-dom": "^18.2.7",
+    "@types/react-dom": "18.2.7",
     "bun-types": "latest"
   },
   "module": "src/index.js",
