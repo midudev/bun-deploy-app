@@ -24,9 +24,6 @@ const TODOS = [
 ]
 
 const app = new Elysia()
-  .on('start', app => {
-    console.log('Elysia started at http://%s:%s', app.server?.hostname, app.server?.port);
-  })
   .use(html())
   .use(swagger())
   .use(staticPlugin({
@@ -69,5 +66,7 @@ const app = new Elysia()
       }
     })
   })
-  .listen(Bun.env.PORT || 0);
+  .listen(Bun.env.PORT || 0, ({ hostname, port}) => {
+    console.log('Elysia started at http://%s:%s', hostname, port);
+  });
 
